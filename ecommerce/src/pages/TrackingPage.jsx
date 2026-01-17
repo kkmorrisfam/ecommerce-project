@@ -32,11 +32,27 @@ export function TrackingPage({ cart }) {
     return orderProduct.productId === productId;
   });
 
-  // console.log("thisOrderProduct: ", thisOrderProduct);
-  console.log(isLoading);
+  // console.log("thisOrderProduct", thisOrderProduct);
+  const totalDeliveryTimeMs = (thisOrderProduct.estimatedDeliveryTimeMs - order.orderTimeMs);
+  
+  // console.log(totalDeliveryTimeMs);
+  // console.log("estimated: ", thisOrderProduct.estimatedDeliveryTimeMs);
+  // console.log("orderTime", order.orderTimeMs);
+  
+  const timePassedMs = dayjs().valueOf() - order.orderTimeMs;
+  // const timePassedMs = totalDeliveryTimeMs * 40;
+  // console.log("timePassedMs",timePassedMs);
+  let deliveryPercent = (timePassedMs/totalDeliveryTimeMs);
+  // console.log("deliveryPercent", deliveryPercent);
+
+  if (deliveryPercent > 100) {
+    deliveryPercent = 100;
+  }
   
   return (
     <>
+      {isLoading && <div>Loading...</div>}
+
       <link rel="icon" type="image/svg+xml" href="/tracking-favicon.png" />
       <title>Tracking</title>
 
@@ -50,7 +66,7 @@ export function TrackingPage({ cart }) {
 
           <div className="delivery-date">
             Arriving on:{" "}
-            {dayjs(thisOrderProduct.estimatedDeliveryTimesMs).format("MMMM D")}
+            {dayjs(thisOrderProduct.estimatedDeliveryTimeMs).format("MMMM D")}
           </div>
 
           <div className="product-info">{thisOrderProduct.product.name}</div>
@@ -68,7 +84,7 @@ export function TrackingPage({ cart }) {
           </div>
 
           <div className="progress-bar-container">
-            <div className="progress-bar"></div>
+            <div className="progress-bar" style={{width: `${deliveryPercent}%`}}></div>
           </div>
         </div>
       </div>
