@@ -1,8 +1,8 @@
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { Header } from "../components/Header";
-
+import dayjs from "dayjs";
 import "./TrackingPage.css";
 
 export function TrackingPage({ cart }) {
@@ -22,11 +22,19 @@ export function TrackingPage({ cart }) {
     };
 
     getOrder();
+
     setIsLoading(false);
   }, [orderId]);
 
   if (!order) return null;
 
+  const thisOrderProduct = order.products.find((orderProduct) => {
+    return orderProduct.productId === productId;
+  });
+
+  // console.log("thisOrderProduct: ", thisOrderProduct);
+  console.log(isLoading);
+  
   return (
     <>
       <link rel="icon" type="image/svg+xml" href="/tracking-favicon.png" />
@@ -40,18 +48,18 @@ export function TrackingPage({ cart }) {
             View all orders
           </Link>
 
-          <div className="delivery-date">Arriving on Monday, June 13</div>
+          <div className="delivery-date">
+            Arriving on:{" "}
+            {dayjs(thisOrderProduct.estimatedDeliveryTimesMs).format("MMMM D")}
+          </div>
 
-          <div class="product-info">
-                Black and Gray Athletic Cotton Socks - 6 Pairs
-              </div>
+          <div className="product-info">{thisOrderProduct.product.name}</div>
 
-          <div class="product-info">Quantity: 1</div>
+          <div className="product-info">
+            Quantity: {thisOrderProduct.quantity}
+          </div>
 
-              <img
-            class="product-image"
-                src="images/products/athletic-cotton-socks-6-pairs.jpg"
-              />
+          <img className="product-image" src={thisOrderProduct.product.image} />
 
           <div className="progress-labels-container">
             <div className="progress-label">Preparing</div>
