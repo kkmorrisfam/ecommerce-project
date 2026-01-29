@@ -12,6 +12,7 @@ export function Product({ product, loadCart }) {
     productId: product.id,
     quantity,  //same as quantity: quantity
     });
+
     await loadCart(); //get the updated cart-items from the backend and reload
 };
 
