@@ -22,7 +22,7 @@ export function CheckoutPage({ cart, loadCart }) {
     };
 
     fetchCheckoutData();
-  }, []);
+  }, [cart]);
 
   return (
     <>
