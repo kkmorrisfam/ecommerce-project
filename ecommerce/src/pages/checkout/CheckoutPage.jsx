@@ -17,11 +17,20 @@ export function CheckoutPage({ cart, loadCart }) {
 
       setDeliveryOptions(response.data);
 
-      response = await axios.get("/api/payment-summary");
-      setPaymentSummary(response.data);
+
     };
 
     fetchCheckoutData();
+  }, []);
+
+
+  useEffect(()=>{
+    const loadPaymentSummary = async () => {
+      let response = await axios.get("/api/payment-summary");
+      setPaymentSummary(response.data);
+    }      
+
+    loadPaymentSummary();
   }, [cart]);
 
   return (
