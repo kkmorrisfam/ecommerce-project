@@ -5,6 +5,7 @@ import checkmark from "../../assets/images/icons/checkmark.png";
 
 export function Product({ product, loadCart }) {
   const [quantity, setQuantity] = useState(1);
+  const [showAdded, setShowAdded] = useState(false);  
 
   const addToCart = async () => {
     //post new product to backend cart-items
@@ -13,6 +14,15 @@ export function Product({ product, loadCart }) {
     quantity,  //same as quantity: quantity
     });
 
+    setShowAdded(true);
+
+    setTimeout(()=> {
+      setShowAdded(false);
+    }, 2000)
+    
+    
+    
+    
     await loadCart(); //get the updated cart-items from the backend and reload
 };
 
@@ -61,7 +71,7 @@ export function Product({ product, loadCart }) {
 
       <div className="product-spacer"></div>
 
-      <div className="added-to-cart">
+      <div className="added-to-cart" style={{opacity: showAdded ? 1 : 0}}>
         <img src={checkmark} />
         Added
       </div>
