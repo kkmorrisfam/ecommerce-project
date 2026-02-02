@@ -8,15 +8,15 @@ import { MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
 vi.mock('axios');
- //we use this to create what will run when we 
-        // mock axios.get
+
 describe('HomePage component', ()=> {
     let loadCart;
 
     beforeEach(()=>{
         loadCart = vi.fn();
 
-       
+        //we use this to create what will run when we 
+        // mock axios.get       
         axios.get.mockImplementation(async (urlPath)=> {
             if(urlPath === '/api/products') {
                 return {
@@ -75,6 +75,12 @@ describe('HomePage component', ()=> {
 
     it('adds products to the cart'), async () => {
         const user = userEvent.setup();
+
+        render(
+            <MemoryRouter>
+                <HomePage cart={[]} loadCart={loadCart} />
+            </MemoryRouter>
+        )
         const productContainers = await screen.findAllByTestId('product-container');
         const addToCartButton1 = screen.within(productContainers[0]).getByTestId('add-to-cart-button');
         const addToCartButton2 = screen.within(productContainers[1]).getByTestId('add-to-cart-button');
