@@ -5,6 +5,7 @@ import '@testing-library/jest-dom/vitest';
 // import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router';
+import userEvent from '@testing-library/user-event';
 
 vi.mock('axios');
  //we use this to create what will run when we 
@@ -71,4 +72,44 @@ describe('HomePage component', ()=> {
         
 
     });
+
+    it('adds products to the cart'), async () => {
+        const user = userEvent.setup();
+        const productContainers = await screen.findAllByTestId('product-container');
+        const addToCartButton1 = screen.within(productContainers[0]).getByTestId('add-to-cart-button');
+        const addToCartButton2 = screen.within(productContainers[1]).getByTestId('add-to-cart-button');
+        const quantitySelector1 = screen.within(productContainers[0]).getByTestId('quantitySelector');
+        const quantitySelector2 = screen.within(productContainers[1]).getByTestId('quantitySelector');
+
+        expect(quantitySelector1).toHaveValue('2');        
+
+        await user.click(addToCartButton1);
+        
+        expect(quantitySelector2).toHaveValue('3');
+
+        await user.click(addToCartButton2);
+
+        expect(axios.post).toHaveBeenNthCalledWith(
+            1,
+            '/api/cart-items',
+            {
+                productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+                quantity: 2
+            }
+        );
+
+        expect(axios.post).toHaveBeenNthCalledWith(
+            2,
+            '/api/cart-items',
+            {
+                productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+                quantity: 3
+            }
+        );
+        
+        expect(loadCart).toHaveBeenCalledTimes(2);
+
+    };
+
+    
 });
