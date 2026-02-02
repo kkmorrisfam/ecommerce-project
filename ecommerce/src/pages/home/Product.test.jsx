@@ -28,7 +28,7 @@ describe('Product component', ()=> {
         loadCart = vi.fn();
     })
     
-    it('displays the product details correctly', ()=> {
+    it('displays the product details correctly', async ()=> {
         
 
         render(<Product product={product} loadCart={loadCart}  />);
@@ -40,7 +40,7 @@ describe('Product component', ()=> {
         ).toBeInTheDocument();
 
         expect(
-        screen.getByTestId('product-image')
+            screen.getByTestId('product-image')
         ).toHaveAttribute('src', 'images/products/athletic-cotton-socks-6-pairs.jpg');
 
         expect(
@@ -50,6 +50,31 @@ describe('Product component', ()=> {
         expect(
             screen.getByText('87')
         ).toBeInTheDocument();
+
+        const quantitySelector = screen.getByTestId('quantitySelector');
+
+        expect(quantitySelector).toHaveValue('1');
+
+        const user = userEvent.setup();
+        
+        await user.selectOptions(quantitySelector, '3');
+
+        expect(quantitySelector).toHaveValue('3');
+
+        //test add to cart after updating quantity
+        const addToCartButton = screen.getByTestId('add-to-cart-button');
+
+        await user.click(addToCartButton);
+
+        expect(axios.post).toHaveBeenCalledWith(
+            '/api/cart-items',
+            {
+                productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+                quantity: 3
+            }
+        );
+
+        expect(loadCart).toHaveBeenCalled();
     });
 
     it('adds a product to the cart', async ()=>{
